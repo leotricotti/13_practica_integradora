@@ -1,0 +1,182 @@
+import { usersService } from "../repository/index.js";
+import UsersDto from "../dao/DTOs/users.dto.js";
+import { generateToken, isValidPassword, createHash } from "../utils/utils.js";
+import CustomError from "../services/errors/CustomError.js";
+import EErrors from "../services/errors/enum.js";
+import { generateSessionErrorInfo } from "../services/errors/info.js";
+import MailingService from "../services/mailing.js";
+
+const htmlTemplate = [
+  ` <div style="background-color: #ffffff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);">
+      <h2 style="text-align: center; color: #333;">Recuperación de Contraseña</h2>
+      <p>Estimado/a [Nombre del Usuario],</p>
+      <p>Te enviamos este correo electrónico porque solicitaste restablecer tu contraseña. Para completar el proceso por favor sigue las instrucciones:</p>
+      <p><strong>Paso 1:</strong> Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
+      <p><a href="[Enlace para restablecer contraseña]" style="text-decoration: none; background-color: #4caf50; color: white; padding: 10px 20px; border-radius: 5px; display: inline-block; margin-top: 10px;">Restablecer Contraseña</a></p>
+      <p><strong>Paso 2:</strong> Una vez que hagas clic en el enlace, serás redirigido/a a una página donde podrás crear una nueva contraseña segura para tu cuenta.</p>
+      <p>Si no solicitaste restablecer tu contraseña, por favor ignora este mensaje. Tu información de cuenta sigue siendo segura y no se ha visto comprometida.</p>
+      <p>Si necesitas ayuda o tienes alguna pregunta, no dudes en ponerte en contacto con nuestro equipo de soporte a través de <a href="mailto:[correo electrónico de soporte]" style="color: #4caf50; text-decoration: none;">[correo electrónico de soporte]</a> o llamando al <strong>[número de teléfono de soporte]</strong>.</p>
+      <p>Gracias por confiar en nosotros.</p>
+      <p>Atentamente,</p>
+      <p><strong>E-Store</strong><br>
+    </div>
+    `,
+];
+
+// Route that performs user registration
+async function signupUser(req, res) {
+  req.logger.info(`Usuario creado con éxito ${new Date().toLocaleString()}`);
+  res.status(200).json({ message: "Usuario creado con éxito" });
+}
+
+// Route that executes when user registration fails
+async function failRegister(req, res, next) {
+  const result = [];
+  req.logger.error(
+    `Error de base de datos: Error al crear el usuario ${new Date().toLocaleString()}`
+  );
+  CustomError.createError({
+    name: "Error de base de datos",
+    cause: generateSessionErrorInfo(result, EErrors.DATABASE_ERROR),
+    message: "Error al crear el usuario",
+    code: EErrors.DATABASE_ERROR,
+  });
+  next();
+}
+
+// Route that performs user login
+async function loginUser(req, res, next) {
+  const { username, password } = req.body;
+  try {
+    if (!username || !password) {
+      const result = [username, password];
+      req.logger.error(
+        `Error de tipo de dato: Error de inicio de sesión ${new Date().toLocaleString()}`
+      );
+      CustomError.createError({
+        name: "Error de tipo de dato",
+        cause: generateSessionErrorInfo(result, EErrors.INVALID_TYPES_ERROR),
+        message: "Error de inicio de sesión",
+        code: EErrors.INVALID_TYPES_ERROR,
+      });
+    } else {
+      const result = await usersService.getOneUser(username);
+
+      if (
+        result.length === 0 ||
+        !isValidPassword(result[0].password, password)
+      ) {
+        req.logger.error(
+          `Error de base de datos: Usuario no encontrado ${new Date().toLocaleString()}`
+        );
+        CustomError.createError({
+          name: "Error de base de datos",
+          cause: generateSessionErrorInfo(result, EErrors.DATABASE_ERROR),
+          message: "Usuario no encontrado",
+          code: EErrors.DATABASE_ERROR,
+        });
+      } else {
+        const myToken = generateToken({
+          first_name: result[0].first_name,
+          username,
+          password,
+          role: result[0].role,
+        });
+        req.logger.info(
+          `Login realizado con éxito ${new Date().toLocaleString()}`
+        );
+        res.json({ message: "Login realizado con éxito", token: myToken });
+      }
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Route that executes when user login fails
+async function failLogin(req, res, next) {
+  const result = [];
+  req.logger.error(
+    `Error de base de datos: Error al iniciar sessión ${new Date().toLocaleString()}`
+  );
+  CustomError.createError({
+    name: "Error de base de datos",
+    cause: generateSessionErrorInfo(result, EErrors.DATABASE_ERROR),
+    message: "Error al iniciar sessión",
+    code: EErrors.DATABASE_ERROR,
+  });
+  return next();
+}
+
+// Route that recovers the password
+async function forgotPassword(req, res, next) {
+  const { username } = req.body;
+  try {
+    if (!username) {
+      const result = [username];
+      req.logger.error(
+        `Error de tipo de dato: Error al actualizar la contraseña ${new Date().toLocaleString()}`
+      );
+      CustomError.createError({
+        name: "Error de tipo de dato",
+        cause: generateSessionErrorInfo(result, EErrors.INVALID_TYPES_ERROR),
+        message: "Error al actualizar la contraseña",
+        code: EErrors.INVALID_TYPES_ERROR,
+      });
+    }
+
+    const result = await usersService.getOneUser(username);
+
+    console.log(result);
+
+    if (result.length === 0) {
+      req.logger.error(
+        `Error de base de datos: Usuario no encontrado ${new Date().toLocaleString()}`
+      );
+      CustomError.createError({
+        name: "Error de base de datos",
+        cause: generateSessionErrorInfo(result, EErrors.DATABASE_ERROR),
+        message: "Usuario no encontrado",
+        code: EErrors.DATABASE_ERROR,
+      });
+    } else {
+      const mailer = new MailingService();
+      const result = await mailer.sendSimpleMail({
+        from: "E-Store",
+        to: username,
+        subject: "Recuperación de contraseña",
+        html: htmlTemplate,
+      });
+      req.logger.info(
+        `Correo de recuperación enviado al usuario ${new Date().toLocaleString()}`
+      );
+      res.status(200).json({
+        response: "Correo de recuperación enviado al usuario",
+      });
+    }
+  } catch (error) {
+    next(error);
+  }
+}
+
+// Route that returns the logged in user
+async function currentUser(req, res) {
+  const user = new UsersDto(req.user.user);
+  res.status(200).json({ data: user });
+}
+
+// Github callback
+async function githubCallback(req, res) {
+  req.user = req.user._json;
+  res.redirect("/api/products?page=1");
+}
+
+export {
+  signupUser,
+  failRegister,
+  loginUser,
+  failLogin,
+  currentUser,
+  forgotPassword,
+  githubCallback,
+};
