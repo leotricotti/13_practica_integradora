@@ -98,3 +98,8 @@ const postLogin = async (username, password) => {
 const githubLogin = () => {
   window.location.href = "http://localhost:8080/api/sessions/github";
 };
+
+// Spinner de carga
+const btnSpinner = () => {
+  loginButton.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Cargando...`;
+};

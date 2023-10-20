@@ -6,23 +6,6 @@ import EErrors from "../services/errors/enum.js";
 import { generateSessionErrorInfo } from "../services/errors/info.js";
 import MailingService from "../services/mailing.js";
 
-const htmlTemplate = [
-  ` <div style="background-color: #ffffff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);">
-      <h2 style="text-align: center; color: #333;">Recuperación de Contraseña</h2>
-      <p>Estimado/a [Nombre del Usuario],</p>
-      <p>Te enviamos este correo electrónico porque solicitaste restablecer tu contraseña. Para completar el proceso por favor sigue las instrucciones:</p>
-      <p><strong>Paso 1:</strong> Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
-      <p><a href="[Enlace para restablecer contraseña]" style="text-decoration: none; background-color: #4caf50; color: white; padding: 10px 20px; border-radius: 5px; display: inline-block; margin-top: 10px;">Restablecer Contraseña</a></p>
-      <p><strong>Paso 2:</strong> Una vez que hagas clic en el enlace, serás redirigido/a a una página donde podrás crear una nueva contraseña segura para tu cuenta.</p>
-      <p>Si no solicitaste restablecer tu contraseña, por favor ignora este mensaje. Tu información de cuenta sigue siendo segura y no se ha visto comprometida.</p>
-      <p>Si necesitas ayuda o tienes alguna pregunta, no dudes en ponerte en contacto con nuestro equipo de soporte a través de <a href="mailto:[correo electrónico de soporte]" style="color: #4caf50; text-decoration: none;">[correo electrónico de soporte]</a> o llamando al <strong>[número de teléfono de soporte]</strong>.</p>
-      <p>Gracias por confiar en nosotros.</p>
-      <p>Atentamente,</p>
-      <p><strong>E-Store</strong><br>
-    </div>
-    `,
-];
-
 // Route that performs user registration
 async function signupUser(req, res) {
   req.logger.info(`Usuario creado con éxito ${new Date().toLocaleString()}`);
@@ -125,27 +108,39 @@ async function forgotPassword(req, res, next) {
       });
     }
 
-    const result = await usersService.getOneUser(username);
+    const user = await usersService.getOneUser(username);
 
-    console.log(result);
+    console.log(user);
 
-    if (result.length === 0) {
+    if (user.length === 0) {
       req.logger.error(
         `Error de base de datos: Usuario no encontrado ${new Date().toLocaleString()}`
       );
       CustomError.createError({
         name: "Error de base de datos",
-        cause: generateSessionErrorInfo(result, EErrors.DATABASE_ERROR),
+        cause: generateSessionErrorInfo(user, EErrors.DATABASE_ERROR),
         message: "Usuario no encontrado",
         code: EErrors.DATABASE_ERROR,
       });
     } else {
       const mailer = new MailingService();
-      const result = await mailer.sendSimpleMail({
+      const sendEmail = await mailer.sendSimpleMail({
         from: "E-Store",
         to: username,
         subject: "Recuperación de contraseña",
-        html: htmlTemplate,
+        html: ` 
+          <div style="background-color: #ffffff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);">
+              <h2 style="text-align: center; color: #333;">Recuperación de Contraseña</h2>
+              <p>Estimado/a ${user[0].first_name},</p>
+              <p>Te enviamos este correo electrónico porque solicitaste restablecer tu contraseña. Para completar el proceso por favor sigue las instrucciones:</p>
+              <p><strong>Paso 1:</strong> Haz clic en el siguiente enlace para restablecer tu contraseña:</p>
+              <p><a href="[Enlace para restablecer contraseña]" style="text-decoration: none; background-color: #4caf50; color: white; padding: 10px 20px; border-radius: 5px; display: inline-block; margin-top: 10px;">Restablecer Contraseña</a></p>
+              <p><strong>Paso 2:</strong> Una vez que hagas clic en el enlace, serás redirigido/a a una página donde podrás crear una nueva contraseña segura para tu cuenta.</p>
+              <p>Si no solicitaste restablecer tu contraseña, por favor ignora este mensaje. Tu información de cuenta sigue siendo segura y no se ha visto comprometida.</p>
+              <p>Atentamente,</p>
+              <p><strong>E-Store</strong><br>
+            </div>
+            `,
       });
       req.logger.info(
         `Correo de recuperación enviado al usuario ${new Date().toLocaleString()}`
