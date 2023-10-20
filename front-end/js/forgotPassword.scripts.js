@@ -63,23 +63,3 @@ const restoreBtn = document.getElementById("forgot-button");
 const btnSpinner = () => {
   restoreBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Cargando...`;
 };
-
-// // Constantes que capturan los elementos del DOM
-// const newEyeOpen = document.getElementById("new-eye-open");
-// const newPassword = document.getElementById("new-password");
-// const newEyeClose = document.getElementById("new-eye-close");
-// const newEyeContainer = document.getElementById("new-eye-container");
-
-// // Función que agrega un evento de click al botón de mostrar/ocultar contraseña
-// newEyeContainer.addEventListener("click", () => {
-//   newEyeOpen.classList.toggle("show-password");
-//   newEyeClose.classList.toggle("show-password");
-//   showNewPassword();
-// });
-
-// // Función que muestra/oculta la contraseña
-// const showNewPassword = () => {
-//   newPassword.type = newEyeOpen.classList.contains("show-password")
-//     ? "text"
-//     : "password";
-// };
