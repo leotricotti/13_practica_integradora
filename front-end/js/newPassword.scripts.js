@@ -1,6 +1,38 @@
 // Constantes que capturan los elementos del DOM
-const repitEyeOpen = document.getElementById("repit-eye-open");
+const newPassword = document.getElementById("new-password");
 const repitPassword = document.getElementById("repit-password");
+
+const updatePassword = (newPasswordData, repitPasswordData) => {
+  if (newPasswordData !== repitPasswordData) {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "Las contraseñas no coinciden",
+      confirmButtonText: "Aceptar",
+      showClass: {
+        popup: "animate__animated animate__zoomIn",
+      },
+      hideClass: {
+        popup: "animate__animated animate__zoomOut",
+      },
+    }).then(() => {
+      window.location.href = "newPassword.html";
+    });
+  }
+
+  const response = fetch(
+    (url = "http://localhost:8080/api/users/newPassword"),
+    {}
+  );
+};
+
+addEventListener("submit", (e) => {
+  e.preventDefault();
+  updatePassword(newPassword.value, repitPassword.value);
+});
+
+// Constantes que capturan los elementos del DOM
+const repitEyeOpen = document.getElementById("repit-eye-open");
 const repitEyeClose = document.getElementById("repit-eye-close");
 const repitEyeContainer = document.getElementById("repit-eye-container");
 
@@ -16,4 +48,11 @@ const showNewPassword = () => {
   repitPassword.type = repitEyeOpen.classList.contains("show-password")
     ? "text"
     : "password";
+};
+
+const updatePasswordBtn = document.getElementById("update-password-button");
+
+// Spinner de carga
+const btnSpinner = () => {
+  updatePasswordBtn.innerHTML = `<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Cargando...`;
 };
