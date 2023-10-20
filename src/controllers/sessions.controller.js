@@ -213,6 +213,7 @@ export {
   failRegister,
   loginUser,
   failLogin,
+  updatePassword,
   currentUser,
   forgotPassword,
   githubCallback,
