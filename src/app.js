@@ -5,6 +5,7 @@ import passport from "passport";
 import config from "./config/config.js";
 import UserCart from "./routes/userCart.routes.js";
 import CartsRouter from "./routes/carts.routes.js";
+import UpdatePassword from "./controllers/updatePassword.controller.js";
 import SessionsRouter from "./routes/sessions.routes.js";
 import ProductsRouter from "./routes/products.routes.js";
 import RealTimeProducts from "./routes/realTimeProducts.routes.js";
@@ -58,6 +59,7 @@ app.use("/api/userCart", authToken, authorization("user"), UserCart);
 app.use("/api/carts", authToken, authorization("user"), CartsRouter);
 app.use("/api/sessions", SessionsRouter);
 app.use("/api/products", authToken, authorization("user"), ProductsRouter);
+app.use("/api/updatePassword", authToken, UpdatePassword);
 app.use(
   "/api/realTimeProducts",
   authToken,

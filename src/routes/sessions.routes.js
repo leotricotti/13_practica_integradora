@@ -4,7 +4,6 @@ import {
   failRegister,
   failLogin,
   loginUser,
-  updatePassword,
   forgotPassword,
   githubCallback,
   currentUser,
@@ -35,9 +34,6 @@ router.post("/login", loginUser);
 
 //Ruta que recupera la contraseña
 router.post("/forgotPassword", forgotPassword);
-
-//Ruta que actualiza la contraseña
-router.put("/updatePassword", authToken, updatePassword);
 
 //Ruta que se ejecuta cuando falla el login
 router.get("/failLogin", failLogin);
