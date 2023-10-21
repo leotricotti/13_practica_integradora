@@ -34,6 +34,11 @@ const productsSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  owner: {
+    type: String,
+    enum: ["admin", "premium"],
+    default: "admin",
+  },
   thumbnail: {
     type: Array,
     required: false,
