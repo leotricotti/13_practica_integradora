@@ -8,6 +8,7 @@ import {
   forgotPassword,
   githubCallback,
   currentUser,
+  updateUserRole,
 } from "../controllers/sessions.controller.js";
 import { passportCall } from "../utils/utils.js";
 import { verifyToken } from "../utils/utils.js";
@@ -38,6 +39,9 @@ router.post("/forgotPassword", forgotPassword);
 
 // Ruta que actualiza la contraseña
 router.put("/updatePassword/:token", verifyToken, updatePassword);
+
+//Ruta que actualiza el role del usuario
+router.put("/premium/:id", updateUserRole);
 
 //Ruta que se ejecuta cuando falla el login
 router.get("/failLogin", failLogin);

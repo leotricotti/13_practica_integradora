@@ -274,6 +274,7 @@ async function githubCallback(req, res) {
 }
 
 export {
+  updateUserRole,
   updatePassword,
   signupUser,
   failRegister,
