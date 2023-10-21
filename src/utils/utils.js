@@ -25,6 +25,12 @@ const generateToken = (user) => {
   return token;
 };
 
+// Extraer usuario del token
+const getUserFromToken = (token) => {
+  const user = jwt.verify(token, JWT_SECRET);
+  return user;
+};
+
 // Verificar JWT token
 const authToken = (req, res, next) => {
   const authHeader = req.headers.authorization;
@@ -150,4 +156,5 @@ export {
   authorization,
   authToken,
   generateProducts,
+  getUserFromToken,
 };

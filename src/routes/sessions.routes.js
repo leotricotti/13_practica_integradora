@@ -37,7 +37,7 @@ router.post("/login", loginUser);
 router.post("/forgotPassword", forgotPassword);
 
 // Ruta que actualiza la contraseña
-router.put("/updatePassword", authToken, updatePassword);
+router.put("/updatePassword/:token", authToken, updatePassword);
 
 //Ruta que se ejecuta cuando falla el login
 router.get("/failLogin", failLogin);

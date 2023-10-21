@@ -2,7 +2,7 @@
 const newPassword = document.getElementById("new-password");
 const repitPassword = document.getElementById("repit-password");
 
-const updatePassword = (newPasswordData, repitPasswordData) => {
+const updatePassword = async (newPasswordData, repitPasswordData, token) => {
   if (newPasswordData !== repitPasswordData) {
     Swal.fire({
       icon: "error",
@@ -19,25 +19,63 @@ const updatePassword = (newPasswordData, repitPasswordData) => {
       window.location.href = "newPassword.html";
     });
   }
+  try {
+    const response = await fetch(
+      (url = `http://localhost:8080/api/sessions/newPassword?token=${token}`),
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          newPassword: newPasswordData,
+          repitPassword: repitPasswordData,
+        }),
+      }
+    );
 
-  const response = fetch(
-    (url = "http://localhost:8080/api/users/newPassword"),
-    {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        newPassword: newPasswordData,
-        repitPassword: repitPasswordData,
-      }),
+    const result = await response.json();
+
+    if (result.message === "La contraseña no puede ser igual a la anterior") {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "La contraseña no puede ser igual a la anterior",
+        confirmButtonText: "Aceptar",
+        showClass: {
+          popup: "animate__animated animate__zoomIn",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
+        },
+      }).then(() => {
+        window.location.href = "newPassword.html";
+      });
+    } else {
+      Swal.fire({
+        icon: "success",
+        title: "¡Contraseña actualizada!",
+        text: "Su contraseña ha sido actualizada exitosamente",
+        confirmButtonText: "Aceptar",
+        showClass: {
+          popup: "animate__animated animate__zoomIn",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
+        },
+      }).then(() => {
+        window.location.href = "login.html";
+      });
     }
-  );
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 addEventListener("submit", (e) => {
   e.preventDefault();
-  updatePassword(newPassword.value, repitPassword.value);
+  const token = new URLSearchParams(window.location.search).get("token");
+  updatePassword(newPassword.value, repitPassword.value, token);
 });
 
 // Constantes que capturan los elementos del DOM

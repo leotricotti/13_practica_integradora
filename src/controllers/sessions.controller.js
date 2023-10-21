@@ -1,6 +1,10 @@
 import { usersService } from "../repository/index.js";
 import UsersDto from "../dao/DTOs/users.dto.js";
-import { generateToken, isValidPassword } from "../utils/utils.js";
+import {
+  generateToken,
+  isValidPassword,
+  getUserFromToken,
+} from "../utils/utils.js";
 import CustomError from "../services/errors/CustomError.js";
 import EErrors from "../services/errors/enum.js";
 import { generateSessionErrorInfo } from "../services/errors/info.js";
@@ -155,7 +159,10 @@ async function forgotPassword(req, res, next) {
 
 // Ruta que actualiza la contraseña del usuario
 async function updatePassword(req, res, next) {
-  const { username, password } = req.body;
+  const { password } = req.body;
+  const { token } = req.params;
+  const username = getUserFromToken(token);
+  console.log(username);
   try {
     if (!username || !password) {
       const result = [username, password];
@@ -182,6 +189,17 @@ async function updatePassword(req, res, next) {
         message: "Usuario no encontrado",
         code: EErrors.DATABASE_ERROR,
       });
+    } else if (isValidPassword(user[0].password, password)) {
+      req.logger.error(
+        `Error de base de datos: La contraseña no puede ser igual a la anterior ${new Date().toLocaleString()}`
+      );
+      CustomError.createError({
+        name: "Error de base de datos",
+        cause: generateSessionErrorInfo(user, EErrors.DATABASE_ERROR),
+        message: "La contraseña no puede ser igual a la anterior",
+        code: EErrors.DATABASE_ERROR,
+      });
+      res.json({ messsage: "La contraseña no puede ser igual a la anterior" });
     } else {
       const result = await usersService.updatePassword(username, password);
       req.logger.info(
