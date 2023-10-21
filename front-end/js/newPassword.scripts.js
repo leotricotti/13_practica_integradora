@@ -1,5 +1,5 @@
 // Constantes que capturan los elementos del DOM
-const newPassword = document.getElementById("new-password");
+const newPassword = document.getElementById("password");
 const repitPassword = document.getElementById("repit-password");
 
 const updatePassword = async (newPasswordData, repitPasswordData, token) => {
@@ -51,7 +51,7 @@ const updatePassword = async (newPasswordData, repitPasswordData, token) => {
           popup: "animate__animated animate__zoomOut",
         },
       }).then(() => {
-        window.location.href = "newPassword.html";
+        window.location.href = `http://127.0.0.1:5500/html/newPassword.html?token=${token}`;
       });
     } else {
       Swal.fire({

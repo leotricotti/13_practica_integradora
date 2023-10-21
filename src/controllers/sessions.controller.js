@@ -1,6 +1,6 @@
 import { usersService } from "../repository/index.js";
 import UsersDto from "../dao/DTOs/users.dto.js";
-import { generateToken, isValidPassword } from "../utils/utils.js";
+import { generateToken, createHash, isValidPassword } from "../utils/utils.js";
 import CustomError from "../services/errors/CustomError.js";
 import EErrors from "../services/errors/enum.js";
 import { generateSessionErrorInfo } from "../services/errors/info.js";
@@ -44,7 +44,6 @@ async function loginUser(req, res, next) {
       });
     } else {
       const result = await usersService.getOneUser(username);
-
       if (
         result.length === 0 ||
         !isValidPassword(result[0].password, password)
@@ -175,6 +174,7 @@ async function updatePassword(req, res, next) {
 
     const user = await usersService.getOneUser(username);
     const passwordExist = isValidPassword(user[0].password, password);
+
     console.log(passwordExist);
 
     if (user.length === 0) {
@@ -189,18 +189,21 @@ async function updatePassword(req, res, next) {
       });
     } else if (passwordExist) {
       req.logger.error(
-        `Error de base de datos: La contraseña no puede ser igual a la anterior ${new Date().toLocaleString()}`
+        `Error de base de autenticación: La contraseña no puede ser igual a la anterior ${new Date().toLocaleString()}`
       );
       CustomError.createError({
-        name: "Error de base de datos",
+        name: "Error de autenticación",
         cause: generateSessionErrorInfo(user, EErrors.DATABASE_ERROR),
         message: "La contraseña no puede ser igual a la anterior",
         code: EErrors.DATABASE_ERROR,
       });
-      res.json({ messsage: "La contraseña no puede ser igual a la anterior" });
+      res
+        .status(400)
+        .json({ messsage: "La contraseña no puede ser igual a la anterior" });
     } else {
       const uid = user[0]._id;
-      const result = await usersService.updateUserPassword(uid, password);
+      const newPassword = createHash(password);
+      const result = await usersService.updateUserPassword(uid, newPassword);
       req.logger.info(
         `Contraseña actualizada con éxito ${new Date().toLocaleString()}`
       );
