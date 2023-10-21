@@ -64,3 +64,5 @@
 {"level":"error","message":"Authentication error. Failed to verify token 18/10/2023, 14:00:16"}
 {"level":"error","message":"Authentication error. User without permissions 18/10/2023, 14:31:41"}
 {"level":"error","message":"Authentication error. User without permissions 18/10/2023, 14:32:39"}
+{"level":"error","message":"Error de tipo de dato: Error al actualizar la contraseña 21/10/2023, 9:05:24"}
+{"level":"error","message":"Error de tipo de dato: Error al actualizar la contraseña 21/10/2023, 9:07:54"}

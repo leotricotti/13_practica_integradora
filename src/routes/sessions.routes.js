@@ -10,7 +10,7 @@ import {
   currentUser,
 } from "../controllers/sessions.controller.js";
 import { passportCall } from "../utils/utils.js";
-import { authToken } from "../utils/utils.js";
+import { verifyToken } from "../utils/utils.js";
 
 //Inicializa servicios
 const router = Router();
@@ -37,7 +37,7 @@ router.post("/login", loginUser);
 router.post("/forgotPassword", forgotPassword);
 
 // Ruta que actualiza la contraseña
-router.put("/updatePassword/:token", authToken, updatePassword);
+router.put("/updatePassword", updatePassword);
 
 //Ruta que se ejecuta cuando falla el login
 router.get("/failLogin", failLogin);

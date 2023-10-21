@@ -2,7 +2,8 @@
 const newPassword = document.getElementById("new-password");
 const repitPassword = document.getElementById("repit-password");
 
-const updatePassword = async (newPasswordData, repitPasswordData, token) => {
+const updatePassword = async (newPasswordData, repitPasswordData) => {
+  console.log(newPasswordData, repitPasswordData);
   if (newPasswordData !== repitPasswordData) {
     Swal.fire({
       icon: "error",
@@ -21,15 +22,14 @@ const updatePassword = async (newPasswordData, repitPasswordData, token) => {
   }
   try {
     const response = await fetch(
-      (url = `http://localhost:8080/api/sessions/newPassword?token=${token}`),
+      (url = `http://localhost:8080/api/sessions/updatePassword`),
       {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          newPassword: newPasswordData,
-          repitPassword: repitPasswordData,
+          newPasswordData,
         }),
       }
     );
@@ -64,7 +64,7 @@ const updatePassword = async (newPasswordData, repitPasswordData, token) => {
           popup: "animate__animated animate__zoomOut",
         },
       }).then(() => {
-        window.location.href = "login.html";
+        window.location.href = "index.html";
       });
     }
   } catch (error) {

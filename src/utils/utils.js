@@ -2,7 +2,7 @@ import passport from "passport";
 import bcrypt from "bcrypt";
 import config from "../config/config.js";
 import jwt from "jsonwebtoken";
-import { faker } from "@faker-js/faker";
+import { faker, ne } from "@faker-js/faker";
 import CustomError from "../services/errors/CustomError.js";
 import EErrors from "../services/errors/enum.js";
 import { generateAuthErrorInfo } from "../services/errors/info.js";
@@ -25,10 +25,26 @@ const generateToken = (user) => {
   return token;
 };
 
-// Extraer usuario del token
-const getUserFromToken = (token) => {
-  const user = jwt.verify(token, JWT_SECRET);
-  return user;
+// Verificar si token es valido para actualizar contraseña
+const verifyToken = (req, res, next) => {
+  const token = req.params.token;
+  jwt.verify(token, JWT_SECRET, (err, user) => {
+    if (err) {
+      req.logger.error(
+        `Error de autenticación. El token no pudo ser verificado ${new Date().toLocaleString()}`
+      );
+      CustomError.createError({
+        name: "Error de autenticación",
+        cause: generateAuthErrorInfo(token, EErrors.AUTH_ERROR),
+        message: "El token no pudo ser verificado",
+        code: EErrors.AUTH_ERROR,
+      });
+      res.status(401).json({ message: "El token no pudo ser verificado" });
+    } else {
+      req.user = user;
+      next();
+    }
+  });
 };
 
 // Verificar JWT token
@@ -155,6 +171,6 @@ export {
   passportCall,
   authorization,
   authToken,
+  verifyToken,
   generateProducts,
-  getUserFromToken,
 };
