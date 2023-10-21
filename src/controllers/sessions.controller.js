@@ -175,8 +175,6 @@ async function updatePassword(req, res, next) {
     const user = await usersService.getOneUser(username);
     const passwordExist = isValidPassword(user[0].password, password);
 
-    console.log(passwordExist);
-
     if (user.length === 0) {
       req.logger.error(
         `Error de base de datos: Usuario no encontrado ${new Date().toLocaleString()}`

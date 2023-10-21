@@ -197,16 +197,6 @@ const deleteProduct = async (idProduct) => {
   });
 };
 
-//Funcion que posiciona el footer al final de la pagina
-const positionFixedFooter = () => {
-  const footer = document.getElementById("footer");
-  if (window.innerHeight > document.body.clientHeight) {
-    footer.classList.add("fixed-bottom");
-  } else {
-    footer.classList.remove("fixed-bottom");
-  }
-};
-
 //Elimina todos los productos del carrito
 const emptyCart = async () => {
   const cartId = localStorage.getItem("cartId");
@@ -401,7 +391,6 @@ const showCartProducts = async () => {
 
     document.getElementById("cart-nav-container").innerHTML = cartNav;
     document.getElementById("cart-container").innerHTML = html;
-    positionFixedFooter();
   } catch (error) {
     console.error(error);
   }

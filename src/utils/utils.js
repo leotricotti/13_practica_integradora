@@ -39,10 +39,8 @@ const verifyToken = (req, res, next) => {
         message: "El token no pudo ser verificado",
         code: EErrors.AUTH_ERROR,
       });
-      res.status(401).json({ message: "El token no pudo ser verificado" });
     } else {
       req.user = user;
-      console.log(user.user.username);
       next();
     }
   });

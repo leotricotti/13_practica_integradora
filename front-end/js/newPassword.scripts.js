@@ -36,13 +36,28 @@ const updatePassword = async (newPasswordData, repitPasswordData, token) => {
 
     const result = await response.json();
 
-    console.log(result.message);
+    console.log(result);
 
-    if (result.message !== "Contraseña actualizada con éxito") {
+    if (result.message === "El token no pudo ser verificado") {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Error al actualizar la contraseña. Intente nuevamente",
+        text: "El token no pudo ser verificado. Por favor, intente de nuevo.",
+        confirmButtonText: "Aceptar",
+        showClass: {
+          popup: "animate__animated animate__zoomIn",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
+        },
+      }).then(() => {
+        window.location.href = "forgotPassword.html";
+      });
+    } else if (result.err === "Error de autenticación") {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "La contraseña no puede ser igual a la anterior",
         confirmButtonText: "Aceptar",
         showClass: {
           popup: "animate__animated animate__zoomIn",
