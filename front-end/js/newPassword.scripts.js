@@ -22,7 +22,16 @@ const updatePassword = (newPasswordData, repitPasswordData) => {
 
   const response = fetch(
     (url = "http://localhost:8080/api/users/newPassword"),
-    {}
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        newPassword: newPasswordData,
+        repitPassword: repitPasswordData,
+      }),
+    }
   );
 };
 
