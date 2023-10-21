@@ -157,7 +157,7 @@ async function forgotPassword(req, res, next) {
 async function updatePassword(req, res, next) {
   const { newPasswordData } = req.body;
   const password = newPasswordData;
-  const { username } = req.user.username;
+  const username = req.user.user.username;
 
   try {
     if (!password || !username) {
@@ -173,38 +173,41 @@ async function updatePassword(req, res, next) {
       });
     }
 
-    // const user = await usersService.getOneUser(username);
+    const user = await usersService.getOneUser(username);
+    const passwordExist = isValidPassword(user[0].password, password);
+    console.log(passwordExist);
 
-    // if (user.length === 0) {
-    //   req.logger.error(
-    //     `Error de base de datos: Usuario no encontrado ${new Date().toLocaleString()}`
-    //   );
-    //   CustomError.createError({
-    //     name: "Error de base de datos",
-    //     cause: generateSessionErrorInfo(user, EErrors.DATABASE_ERROR),
-    //     message: "Usuario no encontrado",
-    //     code: EErrors.DATABASE_ERROR,
-    //   });
-    // } else if (isValidPassword(user[0].password, password)) {
-    //   req.logger.error(
-    //     `Error de base de datos: La contraseña no puede ser igual a la anterior ${new Date().toLocaleString()}`
-    //   );
-    //   CustomError.createError({
-    //     name: "Error de base de datos",
-    //     cause: generateSessionErrorInfo(user, EErrors.DATABASE_ERROR),
-    //     message: "La contraseña no puede ser igual a la anterior",
-    //     code: EErrors.DATABASE_ERROR,
-    //   });
-    //   res.json({ messsage: "La contraseña no puede ser igual a la anterior" });
-    // } else {
-    //   const result = await usersService.updatePassword(username, password);
-    //   req.logger.info(
-    //     `Contraseña actualizada con éxito ${new Date().toLocaleString()}`
-    //   );
-    //   res.status(200).json({
-    //     response: "Contraseña actualizada con éxito",
-    //   });
-    // }
+    if (user.length === 0) {
+      req.logger.error(
+        `Error de base de datos: Usuario no encontrado ${new Date().toLocaleString()}`
+      );
+      CustomError.createError({
+        name: "Error de base de datos",
+        cause: generateSessionErrorInfo(user, EErrors.DATABASE_ERROR),
+        message: "Usuario no encontrado",
+        code: EErrors.DATABASE_ERROR,
+      });
+    } else if (passwordExist) {
+      req.logger.error(
+        `Error de base de datos: La contraseña no puede ser igual a la anterior ${new Date().toLocaleString()}`
+      );
+      CustomError.createError({
+        name: "Error de base de datos",
+        cause: generateSessionErrorInfo(user, EErrors.DATABASE_ERROR),
+        message: "La contraseña no puede ser igual a la anterior",
+        code: EErrors.DATABASE_ERROR,
+      });
+      res.json({ messsage: "La contraseña no puede ser igual a la anterior" });
+    } else {
+      const uid = user[0]._id;
+      const result = await usersService.updateUserPassword(uid, password);
+      req.logger.info(
+        `Contraseña actualizada con éxito ${new Date().toLocaleString()}`
+      );
+      res.status(200).json({
+        message: "Contraseña actualizada con éxito",
+      });
+    }
   } catch (error) {
     next(error);
   }

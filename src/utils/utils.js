@@ -42,6 +42,7 @@ const verifyToken = (req, res, next) => {
       res.status(401).json({ message: "El token no pudo ser verificado" });
     } else {
       req.user = user;
+      console.log(user.user.username);
       next();
     }
   });

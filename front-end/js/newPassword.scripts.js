@@ -2,7 +2,7 @@
 const newPassword = document.getElementById("new-password");
 const repitPassword = document.getElementById("repit-password");
 
-const updatePassword = async (newPasswordData, repitPasswordData) => {
+const updatePassword = async (newPasswordData, repitPasswordData, token) => {
   console.log(newPasswordData, repitPasswordData);
   if (newPasswordData !== repitPasswordData) {
     Swal.fire({
@@ -22,7 +22,7 @@ const updatePassword = async (newPasswordData, repitPasswordData) => {
   }
   try {
     const response = await fetch(
-      (url = `http://localhost:8080/api/sessions/updatePassword`),
+      (url = `http://localhost:8080/api/sessions/updatePassword/${token}`),
       {
         method: "PUT",
         headers: {
@@ -36,11 +36,13 @@ const updatePassword = async (newPasswordData, repitPasswordData) => {
 
     const result = await response.json();
 
-    if (result.message === "La contraseña no puede ser igual a la anterior") {
+    console.log(result.message);
+
+    if (result.message !== "Contraseña actualizada con éxito") {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "La contraseña no puede ser igual a la anterior",
+        text: "Error al actualizar la contraseña. Intente nuevamente",
         confirmButtonText: "Aceptar",
         showClass: {
           popup: "animate__animated animate__zoomIn",
