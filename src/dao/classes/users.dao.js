@@ -61,6 +61,17 @@ export default class UsersDao {
     }
   };
 
+  // Método asyncrono para cambiar el role del usuario
+  updateRole = async (id, role) => {
+    try {
+      const respuesta = await usersModel.findByIdAndUpdate(id, { role: role });
+      return respuesta;
+    } catch (error) {
+      console.log(error);
+      return [];
+    }
+  };
+
   // Método asyncrono para popular el carrito
   populatedCart = async (id) => {
     try {

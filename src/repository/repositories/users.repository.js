@@ -27,6 +27,12 @@ export default class UsersRepository {
     return result;
   }
 
+  // Método asyncrono para cambiar el role del usuario
+  async updateUserRole(id, role) {
+    const result = await this.dao.updateRole(id, role);
+    return result;
+  }
+
   //Método asyncrono para actualizar el carrito
   async updateUserCart(id, user) {
     const result = await this.dao.updateCart(id, user);
