@@ -304,6 +304,7 @@ const getProducts = async () => {
     }
 
     const products = await result.json();
+    showSpinner(products);
 
     return products;
   } catch (error) {

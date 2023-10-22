@@ -264,6 +264,8 @@ const showCartProducts = async () => {
       }
     );
     const cart = await response.json();
+    const cartData = [cart];
+    showSpinner(cartData);
     const products = cart.data.products;
     localStorage.setItem("cart", JSON.stringify(products));
     let html = "";

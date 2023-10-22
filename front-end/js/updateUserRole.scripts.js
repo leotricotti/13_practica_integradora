@@ -15,7 +15,7 @@ async function updateUserRole(userRole) {
     },
     body: JSON.stringify(userRole),
   });
-  const data = await response.json();
+  console.log(response);
 }
 
 // Función para cambiar el rol del usuario

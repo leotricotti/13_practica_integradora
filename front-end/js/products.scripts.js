@@ -21,6 +21,7 @@ const productsHandler = async (handler, index) => {
 
   const products = await result.json();
   const productsData = products.products;
+  showSpinner(productsData);
 
   const productsContainer = document.getElementById("products-container");
   productsContainer.innerHTML = "";

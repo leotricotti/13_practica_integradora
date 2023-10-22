@@ -36,8 +36,6 @@ const updatePassword = async (newPasswordData, repitPasswordData, token) => {
 
     const result = await response.json();
 
-    console.log(result);
-
     if (result.message === "El token no pudo ser verificado") {
       Swal.fire({
         icon: "error",
