@@ -1,6 +1,5 @@
 //Inicializar spinner
 function showSpinner(data) {
-  console.log(data.length);
   if (data.length > 0) {
     setTimeout(() => {
       document
