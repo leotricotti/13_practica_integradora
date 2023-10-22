@@ -92,5 +92,9 @@ const renderUserRoleToogle = () => {
 // Evento para renderizar el botón de cambio de rol
 window.addEventListener("load", () => {
   renderUserRoleToogle();
-  premiumUserAccess(userRole);
+
+  // Verificar si la función premiumUserAccess está definida antes de llamarla
+  if (typeof premiumUserAccess === "function") {
+    premiumUserAccess(userRole);
+  }
 });
