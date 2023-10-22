@@ -11,7 +11,7 @@ import {
   updateUserRole,
 } from "../controllers/sessions.controller.js";
 import { passportCall } from "../utils/utils.js";
-import { verifyToken } from "../utils/utils.js";
+import { verifyToken, authToken } from "../utils/utils.js";
 
 //Inicializa servicios
 const router = Router();
@@ -41,7 +41,7 @@ router.post("/forgotPassword", forgotPassword);
 router.put("/updatePassword/:token", verifyToken, updatePassword);
 
 //Ruta que actualiza el role del usuario
-router.put("/premium/:id", updateUserRole);
+router.put("/premium/:id", authToken, updateUserRole);
 
 //Ruta que se ejecuta cuando falla el login
 router.get("/failLogin", failLogin);

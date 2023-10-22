@@ -3,7 +3,6 @@ const newPassword = document.getElementById("password");
 const repitPassword = document.getElementById("repit-password");
 
 const updatePassword = async (newPasswordData, repitPasswordData, token) => {
-  console.log(newPasswordData, repitPasswordData);
   if (newPasswordData !== repitPasswordData) {
     Swal.fire({
       icon: "error",

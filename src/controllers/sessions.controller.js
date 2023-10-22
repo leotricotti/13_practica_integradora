@@ -217,45 +217,44 @@ async function updatePassword(req, res, next) {
 // Ruta que actualiza el rol de usuario
 async function updateUserRole(req, res, next) {
   const { newRoleData } = req.body;
-  const role = newRoleData;
-  const username = req.user.user.username;
+  console.log(newRoleData);
+  // const role = newRoleData;
+  // const username = req.user.user.username;
 
   try {
-    if (!role || !username) {
-      const result = [role, username];
-      req.logger.error(
-        `Error de tipo de dato: Error al actualizar el rol ${new Date().toLocaleString()}`
-      );
-      CustomError.createError({
-        name: "Error de tipo de dato",
-        cause: generateSessionErrorInfo(result, EErrors.INVALID_TYPES_ERROR),
-        message: "Error al actualizar el rol",
-        code: EErrors.INVALID_TYPES_ERROR,
-      });
-    }
-
-    const user = await usersService.getOneUser(username);
-
-    if (user.length === 0) {
-      req.logger.error(
-        `Error de base de datos: Usuario no encontrado ${new Date().toLocaleString()}`
-      );
-      CustomError.createError({
-        name: "Error de base de datos",
-        cause: generateSessionErrorInfo(user, EErrors.DATABASE_ERROR),
-        message: "Usuario no encontrado",
-        code: EErrors.DATABASE_ERROR,
-      });
-    } else {
-      const uid = user[0]._id;
-      const result = await usersService.updateUserRole(uid, role);
-      req.logger.info(
-        `Rol actualizado con éxito ${new Date().toLocaleString()}`
-      );
-      res.status(200).json({
-        message: "Rol actualizado con éxito",
-      });
-    }
+    // if (!role || !username) {
+    //   const result = [role, username];
+    //   req.logger.error(
+    //     `Error de tipo de dato: Error al actualizar el rol ${new Date().toLocaleString()}`
+    //   );
+    //   CustomError.createError({
+    //     name: "Error de tipo de dato",
+    //     cause: generateSessionErrorInfo(result, EErrors.INVALID_TYPES_ERROR),
+    //     message: "Error al actualizar el rol",
+    //     code: EErrors.INVALID_TYPES_ERROR,
+    //   });
+    // }
+    // const user = await usersService.getOneUser(username);
+    // if (user.length === 0) {
+    //   req.logger.error(
+    //     `Error de base de datos: Usuario no encontrado ${new Date().toLocaleString()}`
+    //   );
+    //   CustomError.createError({
+    //     name: "Error de base de datos",
+    //     cause: generateSessionErrorInfo(user, EErrors.DATABASE_ERROR),
+    //     message: "Usuario no encontrado",
+    //     code: EErrors.DATABASE_ERROR,
+    //   });
+    // } else {
+    //   const uid = user[0]._id;
+    //   const result = await usersService.updateUserRole(uid, role);
+    //   req.logger.info(
+    //     `Rol actualizado con éxito ${new Date().toLocaleString()}`
+    //   );
+    //   res.status(200).json({
+    //     message: "Rol actualizado con éxito",
+    //   });
+    // }
   } catch (error) {
     next(error);
   }

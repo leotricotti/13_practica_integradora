@@ -6,24 +6,26 @@ const user = localStorage.getItem("user");
 let userRole = JSON.parse(user).role;
 
 // Función para actualizar el rol del usuario
-async function updateUserRole(userRole) {
+async function updateUserRole(newRoleData) {
+  const token = localStorage.getItem("token");
+
   const response = fetch("http://localhost:8080/api/sessions/premium/", {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
+      Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify(userRole),
+    body: JSON.stringify({ newRoleData }),
   });
   console.log(response);
 }
 
 // Función para cambiar el rol del usuario
 function toggleUserRole() {
-  if (userRole === "PREMIUM") {
-    userRole = "BASIC";
+  if (userRole === "premium") {
+    userRole = "user";
   } else {
-    userRole = "PREMIUM";
+    userRole = "premium";
   }
   renderUserRoleToogle();
   updateUserRole(userRole);
