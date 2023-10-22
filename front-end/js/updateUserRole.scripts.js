@@ -63,6 +63,7 @@ async function updateUserRole(newRoleData) {
     }).then(() => {
       user.role = newRoleData;
       localStorage.setItem("user", JSON.stringify(user));
+      premiumUserAccess(newRoleData);
     });
   }
 }

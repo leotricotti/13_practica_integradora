@@ -5,6 +5,16 @@ const calculateDiscountedPrice = (price, discount = 0.85) => {
   return discountedPrice;
 };
 
+//Funcion que posiciona el footer al final de la pagina
+const positionFixedFooter = () => {
+  const footer = document.getElementById("footer");
+  if (window.innerHeight > document.body.clientHeight) {
+    footer.classList.add("fixed-bottom");
+  } else {
+    footer.classList.remove("fixed-bottom");
+  }
+};
+
 // Funcion que calcula el total de la compra
 const totalPurchase = (products, discount = 0.85) => {
   let total = 0;
@@ -393,6 +403,7 @@ const showCartProducts = async () => {
 
     document.getElementById("cart-nav-container").innerHTML = cartNav;
     document.getElementById("cart-container").innerHTML = html;
+    positionFixedFooter();
   } catch (error) {
     console.error(error);
   }
