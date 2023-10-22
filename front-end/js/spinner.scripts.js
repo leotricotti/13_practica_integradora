@@ -3,6 +3,7 @@ function showSpinner() {
   document.getElementById("spinner").classList.remove("d-none");
   Promise.all([
     new Promise((resolve) => {
+      console.log(resolve);
       window.addEventListener("load", resolve);
     }),
   ]).then(() => {
