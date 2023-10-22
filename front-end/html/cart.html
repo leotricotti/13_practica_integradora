@@ -38,7 +38,7 @@
           style="width: 3rem; height: 3rem"
           role="status"
         >
-          <span class="sr-only">Loading...</span>
+          <span class="sr-only"></span>
         </div>
       </div>
       <nav
@@ -75,6 +75,9 @@
                   <i class="fas fa-user"></i>
                 </a>
                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                  <li id="user-role-toggle"></li>
+                  <li id="premium-access"></li>
+                  <div class="dropdown-divider"></div>
                   <li>
                     <button class="btn dropdown-item" onclick="logout()">
                       <i class="fas fa-sign-out-alt fa-fw"></i>
@@ -227,6 +230,8 @@
     <script src="../js/logout.scripts.js"></script>
     <!-- Cart Badge -->
     <script src="../js/cartBadge.scripts.js"></script>
+    <!--Update user role-->
+    <script src="../js/updateUserRole.scripts.js"></script>
     <!--Spinner-->
     <script src="../js/spinner.scripts.js"></script>
     <!-- Custom JS -->

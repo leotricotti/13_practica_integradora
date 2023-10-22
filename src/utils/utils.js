@@ -120,34 +120,38 @@ const passportCall = (strategy) => {
 };
 
 // Controlar autorizacion de usuario
-const authorization = (role) => {
+const authorization = (...roles) => {
   return async (req, res, next) => {
-    if (!req.user.user) {
-      req.logger.error(
-        `Authentication error. User not authorized ${new Date().toLocaleString()}`
-      );
-      CustomError.createError({
-        name: "Authentication error",
-        cause: generateAuthErrorInfo(req.user, EErrors.AUTH_ERROR),
-        message: "User not authorized",
-        code: EErrors.AUTH_ERROR,
-      });
-      return res.status(401).send({ error: "Unauthorized" });
+    const userRole = req.user.user.role;
+    try {
+      if (!userRole) {
+        req.logger.error(
+          `Error de autenticación: Usuario no autorizado. ${new Date().toLocaleString()}`
+        );
+        CustomError.createError({
+          name: "Error de autenticación",
+          cause: generateAuthErrorInfo(req.user, EErrors.AUTH_ERROR),
+          message: "Usuario no autorizado",
+          code: EErrors.AUTH_ERROR,
+        });
+        return res.status(401).send({ error: "Usuario no autorizado" });
+      }
+      if (!roles.includes(userRole)) {
+        req.logger.error(
+          `Error de autenticación. Usuario sin permisos ${new Date().toLocaleString()}`
+        );
+        CustomError.createError({
+          name: "Error de autenticación",
+          cause: generateAuthErrorInfo(req.user, EErrors.AUTH_ERROR),
+          message: "Usuario sin permisos",
+          code: EErrors.AUTH_ERROR,
+        });
+        return res.status(403).send({ error: "Usuario sin permisos" });
+      }
+      next();
+    } catch (error) {
+      next(error);
     }
-
-    if (req.user.user.role != role) {
-      req.logger.error(
-        `Authentication error. User without permissions ${new Date().toLocaleString()}`
-      );
-      CustomError.createError({
-        name: "Authentication error",
-        cause: generateAuthErrorInfo(role, EErrors.AUTH_ERROR),
-        message: "User without permissions",
-        code: EErrors.AUTH_ERROR,
-      });
-      return res.status(403).send({ error: "No permissions" });
-    }
-    next();
   };
 };
 

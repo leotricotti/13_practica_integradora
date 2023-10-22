@@ -10,23 +10,6 @@ chatBox.addEventListener("keyup", (e) => {
   }
 });
 
-// Posicionar el icono de chat en la parte inferior de la página
-const positionFixedChatIcon = () => {
-  const chatIcon = document.getElementById("chat-img-id");
-  const scrollPosition = window.scrollY;
-  const pageHeight = document.body.scrollHeight - window.innerHeight;
-
-  if (scrollPosition > pageHeight - 150) {
-    chatIcon.style.position = "fixed";
-    chatIcon.style.bottom = "150px";
-  } else {
-    chatIcon.style.position = "fixed";
-    chatIcon.style.bottom = "";
-  }
-};
-
-window.addEventListener("scroll", positionFixedChatIcon);
-
 // Escuchar los mensajes del servidor de Socket.IO y renderizarlos en el HTML
 socket.on("messageLogs", (data) => {
   const log = document.getElementById("message-logs");

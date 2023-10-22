@@ -54,20 +54,25 @@ async function enviroment() {
 enviroment();
 
 // Routes
-app.use("/api/userCart", authToken, authorization("user"), UserCart);
-app.use("/api/carts", authToken, authorization("user"), CartsRouter);
+app.use("/api/userCart", authToken, authorization("user", "premium"), UserCart);
+app.use("/api/carts", authToken, authorization("user", "premium"), CartsRouter);
 app.use("/api/sessions", SessionsRouter);
-app.use("/api/products", authToken, authorization("user"), ProductsRouter);
+app.use(
+  "/api/products",
+  authToken,
+  authorization("user", "premium"),
+  ProductsRouter
+);
 app.use(
   "/api/realTimeProducts",
   authToken,
-  authorization("admin"),
+  authorization("admin", "premium"),
   RealTimeProducts
 );
 app.use(
   "/api/mockingProducts",
   authToken,
-  authorization("user"),
+  authorization("user", "premium"),
   MockingProducts
 );
 app.use(errorHandler);

@@ -2,13 +2,23 @@
 const userRoleToogle = document.getElementById("user-role-toggle");
 
 // Capturar el rol del usuario
-const user = localStorage.getItem("user");
-let userRole = JSON.parse(user).role;
+const user = JSON.parse(localStorage.getItem("user"));
+let userRole = user.role;
+
+// Función para cambiar el rol del usuario
+function toggleUserRole() {
+  if (userRole === "premium") {
+    userRole = "user";
+  } else {
+    userRole = "premium";
+  }
+  renderUserRoleToogle();
+  updateUserRole(userRole);
+}
 
 // Función para actualizar el rol del usuario
 async function updateUserRole(newRoleData) {
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user"));
   const userId = user.username;
 
   const response = await fetch(
@@ -26,24 +36,41 @@ async function updateUserRole(newRoleData) {
   );
   const result = await response.json();
 
-  console.log(result);
-}
-
-// Función para cambiar el rol del usuario
-function toggleUserRole() {
-  if (userRole === "premium") {
-    userRole = "user";
+  if (!result.message === "Rol actualizado con exito") {
+    Swal.fire({
+      icon: "error",
+      title: "Oops...",
+      text: "No se pudo actualizar el rol",
+      confirmButtonText: "Aceptar",
+      showClass: {
+        popup: "animate__animated animate__zoomIn",
+      },
+      hideClass: {
+        popup: "animate__animated animate__zoomOut",
+      },
+    });
   } else {
-    userRole = "premium";
+    Swal.fire({
+      icon: "success",
+      title: "Rol actualizado con exito",
+      confirmButtonText: "Aceptar",
+      showClass: {
+        popup: "animate__animated animate__zoomIn",
+      },
+      hideClass: {
+        popup: "animate__animated animate__zoomOut",
+      },
+    }).then(() => {
+      user.role = newRoleData;
+      localStorage.setItem("user", JSON.stringify(user));
+    });
   }
-  renderUserRoleToogle();
-  updateUserRole(userRole);
 }
 
 // Función para renderizar el botón de cambio de rol
 const renderUserRoleToogle = () => {
   let html = "";
-  if (userRole === "premiun") {
+  if (userRole === "premium") {
     html = `
     <button class="btn dropdown-item" onclick="toggleUserRole()">
     <i class="fa-solid fa-lock-open"></i>
