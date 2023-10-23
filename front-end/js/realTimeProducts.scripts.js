@@ -18,6 +18,9 @@ async function handleUpdateProduct(
   category,
   thumbnail
 ) {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const userRole = user.role;
+  let owner = "";
   try {
     const product = {
       title: title,
@@ -211,6 +214,12 @@ const getProductToUpdate = async (id) => {
 async function handleSubmit(e) {
   e.preventDefault();
 
+  if (userRole === "premium") {
+    owner = user.username;
+  } else {
+    owner = "admin";
+  }
+
   const { title, description, code, price, stock, category, thumbnail } =
     form.elements;
   if (
@@ -238,6 +247,7 @@ async function handleSubmit(e) {
       price: price.value,
       stock: stock.value,
       category: category.value,
+      owner: owner,
       thumbnail:
         thumbnail.value === ""
           ? {
@@ -384,6 +394,25 @@ async function updateProductList() {
     });
 
     productList.appendChild(container);
+    const user = JSON.parse(localStorage.getItem("user"));
+    const userRole = user.role;
+    const deleteBtns = document.querySelectorAll(".delete-product-btn");
+    const updateBtns = document.querySelectorAll(".update-product-btn");
+    if (userRole === "premium") {
+      deleteBtns.forEach((btn) => {
+        btn.disabled = true;
+      });
+      updateBtns.forEach((btn) => {
+        btn.disabled = true;
+      });
+    } else {
+      deleteBtns.forEach((btn) => {
+        btn.disabled = false;
+      });
+      updateBtns.forEach((btn) => {
+        btn.disabled = false;
+      });
+    }
   } catch (error) {
     console.log(error);
   }

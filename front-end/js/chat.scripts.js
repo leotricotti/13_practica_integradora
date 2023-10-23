@@ -1,6 +1,8 @@
 // Conexión con el servidor y envío de mensajes
 const socket = io("http://localhost:8080");
 const chatBox = document.getElementById("textAreaExample");
+const user = JSON.parse(localStorage.getItem("user"));
+const userRole = user.role;
 
 // Agregar un evento de teclado al cuadro de chat
 chatBox.addEventListener("keyup", (e) => {
@@ -32,5 +34,9 @@ socket.on("messageLogs", (data) => {
     `;
   });
 
-  log.innerHTML = message;
+  if (userRole === "admin") {
+    log.innerHTML = "";
+  } else {
+    log.innerHTML = message;
+  }
 });
