@@ -2,15 +2,15 @@
 const userRoleToogle = document.getElementById("user-role-toggle");
 
 // Capturar el rol del usuario
-const user = JSON.parse(localStorage.getItem("user"));
-let userRole = user.role;
+const userData = JSON.parse(localStorage.getItem("user"));
+let userRoleData = userData.role;
 
 // Función para cambiar el rol del usuario
 function toggleUserRole() {
-  if (userRole === "premium") {
-    userRole = "user";
+  if (userRoleData === "premium") {
+    userRoleData = "user";
   } else {
-    userRole = "premium";
+    userRoleData = "premium";
   }
   renderUserRoleToogle();
   updateUserRole(userRole);
@@ -61,7 +61,7 @@ async function updateUserRole(newRoleData) {
         popup: "animate__animated animate__zoomOut",
       },
     }).then(() => {
-      user.role = newRoleData;
+      userData.role = newRoleData;
       localStorage.setItem("user", JSON.stringify(user));
       premiumUserAccess(newRoleData);
     });
@@ -71,7 +71,7 @@ async function updateUserRole(newRoleData) {
 // Función para renderizar el botón de cambio de rol
 const renderUserRoleToogle = () => {
   let html = "";
-  if (userRole === "premium") {
+  if (userRoleData === "premium") {
     html = `
     <button class="btn dropdown-item" onclick="toggleUserRole()">
     <i class="fa-solid fa-lock-open"></i>

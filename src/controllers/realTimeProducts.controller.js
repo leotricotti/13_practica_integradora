@@ -66,7 +66,7 @@ async function getProduct(req, res, next) {
 
 // Metodo asincrono para guardar un producto
 async function saveProduct(req, res, next) {
-  const { title, description, code, price, stock, category, thumbnail } =
+  const { title, description, code, price, stock, category, owner, thumbnail } =
     req.body;
 
   try {
@@ -88,6 +88,7 @@ async function saveProduct(req, res, next) {
       code,
       price,
       stock,
+      owner,
       category,
       thumbnail,
     };
