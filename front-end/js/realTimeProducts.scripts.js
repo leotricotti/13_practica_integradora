@@ -214,8 +214,6 @@ const getProductToUpdate = async (id) => {
 // Función para manejar el envío del formulario
 async function handleSubmit(e) {
   e.preventDefault();
-
-  console.log(userRoleInfo);
   if (userRoleInfo === "premium") {
     owner = userLocalData.username;
   } else {
@@ -361,12 +359,7 @@ async function updateProductList() {
 
   try {
     const products = await paginatedProducts(page);
-    console.log(products);
-
     const container = document.createElement("div");
-    const productOwnerExist = products.filter((product) => {
-      return product.owner === userName;
-    });
 
     products.forEach((product) => {
       //Capturar la url de la imagen
@@ -403,20 +396,22 @@ async function updateProductList() {
     productList.appendChild(container);
     const deleteBtns = document.querySelectorAll(".delete-product-btn");
     const updateBtns = document.querySelectorAll(".update-product-btn");
-    console.log(productOwnerExist, userName);
+
     if (userRoleInfo === "premium") {
-      deleteBtns.forEach((btn) => {
-        btn.disabled = true;
+      deleteBtns.forEach((btn, index) => {
+        console.log(index);
+        if (products[index].owner == userName) {
+          btn.disabled = false;
+        } else {
+          btn.disabled = true;
+        }
       });
-      updateBtns.forEach((btn) => {
-        btn.disabled = true;
-      });
-    } else if (userRoleInfo === "premium" && productOwnerExist) {
-      deleteBtns.forEach((btn) => {
-        btn.disabled = false;
-      });
-      updateBtns.forEach((btn) => {
-        btn.disabled = false;
+      updateBtns.forEach((btn, index) => {
+        if (products[index].owner === userName) {
+          btn.disabled = false;
+        } else {
+          btn.disabled = true;
+        }
       });
     } else {
       deleteBtns.forEach((btn) => {
