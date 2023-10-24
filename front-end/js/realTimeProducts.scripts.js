@@ -264,7 +264,6 @@ async function handleSubmit(e) {
       },
       body: JSON.stringify(product),
     });
-    console.log(product);
     if (!response.ok) {
       return Swal.fire({
         icon: "error",
@@ -399,7 +398,6 @@ async function updateProductList() {
 
     if (userRoleInfo === "premium") {
       deleteBtns.forEach((btn, index) => {
-        console.log(index);
         if (products[index].owner == userName) {
           btn.disabled = false;
         } else {

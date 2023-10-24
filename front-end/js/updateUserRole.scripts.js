@@ -60,13 +60,16 @@ async function updateUserRole(newRoleData) {
       hideClass: {
         popup: "animate__animated animate__zoomOut",
       },
-    }).then(() => {
-      userData.role = newRoleData;
-      localStorage.setItem("user", JSON.stringify(user));
-      premiumUserAccess(newRoleData);
+    }).then((result) => {
+      if (result.isConfirmed) {
+        userData.role = newRoleData;
+        localStorage.setItem("user", JSON.stringify(user));
+      }
     });
   }
 }
+
+console.log;
 
 // Función para renderizar el botón de cambio de rol
 const renderUserRoleToogle = () => {
@@ -97,8 +100,10 @@ const renderUserRoleToogle = () => {
     </li>
   `;
   } else if (
-    userRoleData === "premium" &&
-    window.location.pathname === "/html/products.html"
+    (userRoleData === "premium" &&
+      window.location.pathname === "/html/products.html") ||
+    (userRoleData === "premium" &&
+      window.location.pathname === "/html/cart.html")
   ) {
     html = `
     <li>
@@ -132,10 +137,19 @@ const renderUserRoleToogle = () => {
   `;
   } else {
     html = `
-    <button class="btn dropdown-item" onclick="toggleUserRole()">
-      <i class="fa-solid fa-lock"></i>
-      Basic a Premium
-    </button>
+    <li>
+      <button class="btn dropdown-item" onclick="toggleUserRole()">
+        <i class="fa-solid fa-lock"></i>
+        Basic a Premium
+      </button>
+    </li>
+    <div class="dropdown-divider"></div>
+    <li>
+      <button class="btn dropdown-item" onclick="logout()">
+        <i class="fas fa-sign-out-alt fa-fw"></i>
+        Cerrar sesión
+      </button>
+    </li>
   `;
   }
   dropdownMenu.innerHTML = html;
@@ -144,10 +158,4 @@ const renderUserRoleToogle = () => {
 // Evento para renderizar el botón de cambio de rol
 window.addEventListener("load", () => {
   renderUserRoleToogle();
-  console.log(window.location.pathname);
-
-  // Verificar si la función premiumUserAccess está definida antes de llamarla
-  if (typeof premiumUserAccess === "function") {
-    premiumUserAccess(userRole);
-  }
 });
