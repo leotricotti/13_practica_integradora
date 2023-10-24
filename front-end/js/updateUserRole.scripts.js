@@ -1,5 +1,5 @@
 //Capturar elementos del DOM
-const userRoleToogle = document.getElementById("user-role-toggle");
+const dropdownMenu = document.getElementById("dropdown-menu");
 
 // Capturar el rol del usuario
 const userData = JSON.parse(localStorage.getItem("user"));
@@ -71,27 +71,80 @@ async function updateUserRole(newRoleData) {
 // Función para renderizar el botón de cambio de rol
 const renderUserRoleToogle = () => {
   let html = "";
-  if (userRoleData === "premium") {
+  if (
+    userRoleData === "premium" &&
+    window.location.pathname === "/html/realTimeProducts.html"
+  ) {
     html = `
-    <button class="btn dropdown-item" onclick="toggleUserRole()">
-    <i class="fa-solid fa-lock-open"></i>
-      Premium a Basic
-    </button>
+    <li>
+      <button class="btn dropdown-item" onclick="toggleUserRole()">
+        <i class="fa-solid fa-lock-open"></i>
+        Premium a Basic
+      </button>
+    </li>
+      <li>
+      <a href="products.html" class="btn dropdown-item">
+        <i class="fa-brands fa-product-hunt"></i>
+        Products Page
+      </a>
+    </li>
+    <div class="dropdown-divider"></div>
+    <li>
+    <button class="btn dropdown-item" onclick="logout()">
+        <i class="fas fa-sign-out-alt fa-fw"></i>
+        Cerrar sesión
+      </button>
+    </li>
+  `;
+  } else if (
+    userRoleData === "premium" &&
+    window.location.pathname === "/html/products.html"
+  ) {
+    html = `
+    <li>
+      <button class="btn dropdown-item" onclick="toggleUserRole()">
+        <i class="fa-solid fa-lock-open"></i>
+        Premium a Basic
+      </button>
+    </li>
+      <li>
+      <a href="realTimeProducts.html" class="btn dropdown-item">
+      <i class="fa-solid fa-sliders"></i>
+        Admin Panel
+      </a>
+    </li>
+    <div class="dropdown-divider"></div>
+    <li>
+    <button class="btn dropdown-item" onclick="logout()">
+        <i class="fas fa-sign-out-alt fa-fw"></i>
+        Cerrar sesión
+      </button>
+    </li>
+  `;
+  } else if (userRoleData === "admin") {
+    html = `
+    <li>
+    <button class="btn dropdown-item" onclick="logout()">
+       <i class="fas fa-sign-out-alt fa-fw"></i>
+       Cerrar sesión
+     </button>
+   </li>
   `;
   } else {
     html = `
     <button class="btn dropdown-item" onclick="toggleUserRole()">
-    <i class="fa-solid fa-lock"></i>
+      <i class="fa-solid fa-lock"></i>
       Basic a Premium
     </button>
   `;
   }
-  userRoleToogle.innerHTML = html;
+  dropdownMenu.innerHTML = html;
 };
 
 // Evento para renderizar el botón de cambio de rol
 window.addEventListener("load", () => {
   renderUserRoleToogle();
+  console.log(window.location.pathname);
 
   // Verificar si la función premiumUserAccess está definida antes de llamarla
   if (typeof premiumUserAccess === "function") {

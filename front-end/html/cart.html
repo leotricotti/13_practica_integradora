@@ -42,7 +42,7 @@
         </div>
       </div>
       <nav
-        class="navbar navbar-expand-lg navbar-dark bg-dark position-fixed d-none"
+        class="navbar navbar-expand-lg navbar-dark bg-dark position-fixed top-0 left-0 d-none"
         id="navbar-top"
       >
         <div class="container-fluid">
@@ -53,7 +53,12 @@
             width="25"
             height="25"
           />
-          <a class="navbar-brand" href="#"> E-Store </a>
+          <a
+            class="navbar-brand"
+            href="http://127.0.0.1:5500/html/products.html "
+          >
+            E-Store
+          </a>
           <div
             class="collapse navbar-collapse d-flex align-items-center mb-0 position-relative"
             id="navbarSupportedContent"
@@ -74,25 +79,21 @@
                   <span class="text-light me-3" id="'user-name"> </span>
                   <i class="fas fa-user"></i>
                 </a>
-                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                  <li id="user-role-toggle"></li>
-                  <li id="premium-access"></li>
-                  <div class="dropdown-divider"></div>
-                  <li id="premium-access"></li>
-                  <li>
-                    <button class="btn dropdown-item" onclick="logout()">
-                      <i class="fas fa-sign-out-alt fa-fw"></i>
-                      Cerrar sesión
-                    </button>
-                  </li>
-                </ul>
+                <ul
+                  class="dropdown-menu"
+                  aria-labelledby="navbarDropdown"
+                  id="dropdown-menu"
+                ></ul>
               </li>
-              <div class="btn position-relative">
+              <a
+                class="btn position-relative"
+                href="http://127.0.0.1:5500/html/cart.html"
+              >
                 <div class="cart-basket">
                   <span class="basket-count" id="cart-badge"></span>
                 </div>
                 <i class="fa-solid fa-cart-shopping"></i>
-              </div>
+              </a>
             </ul>
           </div>
         </div>
