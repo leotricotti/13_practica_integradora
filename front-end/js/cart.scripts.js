@@ -75,6 +75,9 @@ const finishPurchaseAction = () => {
     showClass: {
       popup: "animate__animated animate__zoomIn",
     },
+    hideClass: {
+      popup: "animate__animated animate__zoomOut",
+    },
   }).then((result) => {
     if (result.isConfirmed) {
       Swal.fire({
@@ -85,6 +88,9 @@ const finishPurchaseAction = () => {
         confirmButtonText: "Aceptar",
         showClass: {
           popup: "animate__animated animate__zoomIn",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
         },
       }).then((result) => {
         if (result.isConfirmed) {
@@ -167,6 +173,9 @@ const deleteProduct = async (idProduct) => {
     showClass: {
       popup: "animate__animated animate__zoomIn",
     },
+    hideClass: {
+      popup: "animate__animated animate__zoomOut",
+    },
   }).then(async (result) => {
     if (result.isConfirmed) {
       const response = await fetch(
@@ -199,8 +208,12 @@ const deleteProduct = async (idProduct) => {
         icon: "success",
         title: "Producto eliminado con exito!",
         showConfirmButton: true,
+        confirmButtonText: "Aceptar",
         showClass: {
           popup: "animate__animated animate__zoomIn",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
         },
       });
     }

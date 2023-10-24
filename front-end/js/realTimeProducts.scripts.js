@@ -61,6 +61,9 @@ async function handleUpdateProduct(
         showClass: {
           popup: "animate__animated animate__zoomIn",
         },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
+        },
       });
     }
 
@@ -76,6 +79,9 @@ async function handleUpdateProduct(
       showClass: {
         popup: "animate__animated animate__zoomIn",
       },
+      hideClass: {
+        popup: "animate__animated animate__zoomOut",
+      },
     }).then((result) => {
       if (result.isConfirmed) {
         Swal.fire({
@@ -85,6 +91,9 @@ async function handleUpdateProduct(
           confirmButtonText: "Aceptar",
           showClass: {
             popup: "animate__animated animate__zoomIn",
+          },
+          hideClass: {
+            popup: "animate__animated animate__zoomOut",
           },
         }).then((result) => {
           if (result.isConfirmed) {
@@ -235,8 +244,12 @@ async function handleSubmit(e) {
       title: "Lo siento...",
       text: "Todos los campos son necesarios!",
       focusConfirm: true,
+      confirmButtonText: "Aceptar",
       showClass: {
         popup: "animate__animated animate__zoomIn",
+      },
+      hideClass: {
+        popup: "animate__animated animate__zoomOut",
       },
     });
   } else {
@@ -274,14 +287,21 @@ async function handleSubmit(e) {
         showClass: {
           popup: "animate__animated animate__zoomIn",
         },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
+        },
       });
     } else {
       Swal.fire({
         icon: "success",
         title: "Producto agregado con exito!",
         showConfirmButton: true,
+        confirmButtonText: "Aceptar",
         showClass: {
           popup: "animate__animated animate__zoomIn",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
         },
       });
     }
@@ -310,6 +330,12 @@ const getProducts = async () => {
         text: "Algo salió mal! Vuelve a intentarlo",
         showConfirmButton: true,
         confirmButtonText: "Aceptar",
+        showClass: {
+          popup: "animate__animated animate__zoomIn",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
+        },
       });
     }
 
@@ -433,11 +459,12 @@ function eliminarProducto(id) {
     text: "No podrás revertir esta acción!",
     icon: "warning",
     showCancelButton: true,
-    confirmButtonColor: "#3085d6",
     confirmButtonText: "Aceptar",
-    cancelButtonColor: "#d33",
     showClass: {
       popup: "animate__animated animate__zoomIn",
+    },
+    hideClass: {
+      popup: "animate__animated animate__zoomOut",
     },
   }).then(async (result) => {
     if (result.isConfirmed) {
@@ -462,6 +489,9 @@ function eliminarProducto(id) {
           showClass: {
             popup: "animate__animated animate__zoomIn",
           },
+          hideClass: {
+            popup: "animate__animated animate__zoomOut",
+          },
         }).then((result) => {
           if (result.isConfirmed) {
             setTimeout(function () {
@@ -475,8 +505,12 @@ function eliminarProducto(id) {
         icon: "success",
         title: "Producto eliminado con exito!",
         showConfirmButton: true,
+        confirmButtonText: "Aceptar",
         showClass: {
           popup: "animate__animated animate__zoomIn",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
         },
       }).then((result) => {
         if (result.isConfirmed) {

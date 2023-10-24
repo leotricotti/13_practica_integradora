@@ -20,9 +20,11 @@ const forgotPassword = async (username) => {
         title: "¡Éxito!",
         text: "Correo de recuperación enviado al usuario",
         confirmButtonText: "Aceptar",
-        confirmButtonColor: "#009688",
         showClass: {
           popup: "animate__animated animate__zoomIn",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
         },
       }).then((result) => {
         if (result.isConfirmed) {
@@ -35,9 +37,11 @@ const forgotPassword = async (username) => {
         title: "Oops...",
         text: "El usuario no existe",
         confirmButtonText: "Aceptar",
-        confirmButtonColor: "#009688",
         showClass: {
           popup: "animate__animated animate__zoomIn",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
         },
       });
     }

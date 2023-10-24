@@ -23,8 +23,12 @@ async function postSignup(first_name, last_name, username, password) {
       icon: "error",
       title: "Oops...",
       text: result.error,
+      confirmButtonText: "Aceptar",
       showClass: {
         popup: "animate__animated animate__zoomIn",
+      },
+      hideClass: {
+        popup: "animate__animated animate__zoomOut",
       },
     });
     return false;
@@ -32,10 +36,12 @@ async function postSignup(first_name, last_name, username, password) {
     Swal.fire({
       icon: "success",
       title: "Usuario creado correctamente",
-      showConfirmButton: false,
-      timer: 1500,
+      confirmButtonText: "Aceptar",
       showClass: {
         popup: "animate__animated animate__zoomIn",
+      },
+      hideClass: {
+        popup: "animate__animated animate__zoomOut",
       },
     }).then(() => {
       window.location.href = "../html/index.html";

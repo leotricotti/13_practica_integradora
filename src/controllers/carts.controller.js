@@ -1,4 +1,5 @@
 import { cartService } from "../repository/index.js";
+import { productsService } from "../repository/index.js";
 import CustomError from "../services/errors/CustomError.js";
 import EErrors from "../services/errors/enum.js";
 import {
@@ -172,21 +173,27 @@ async function manageCartProducts(req, res, next) {
         code: EErrors.DATABASE_ERROR,
       });
     } else {
-      const productExist = cart.products.findIndex(
-        (product) => product.product == pid
-      );
+      const product = await productsService.getOneProduct(pid);
+      console.log(product.owner);
 
-      if (productExist.owner === req.user.user.username) {
+      if (product.owner === req.user.user.username) {
         req.logger.error(
           `Error de autenticación: El propietario no puede agregar su producto al carrito ${new Date().toLocaleString()}`
         );
         CustomError.createError({
           name: "Error de autenticación",
-          cause: generateCartErrorInfo(cart, EErrors.DATABASE_ERROR),
+          cause: generateAuthErrorInfo(cart, EErrors.AUTH_ERROR),
           message: "El propietario no puede agregar su producto al carrito",
-          code: EErrors.DATABASE_ERROR,
+          code: EErrors.AUTH_ERROR,
+        });
+        res.json({
+          status: "error",
+          message: "El propietario no puede agregar su producto al carrito",
         });
       } else {
+        const productExist = cart.products.findIndex(
+          (product) => product.product == pid
+        );
         if (productExist === -1) {
           cart.products.push({ product: pid, quantity: 1 });
         } else {

@@ -78,9 +78,12 @@ const postLogin = async (username, password) => {
         icon: "error",
         title: "Oops...",
         text: "Usuario o contraseña incorrectos",
-        showConfirmButton: true,
+        confirmButtonText: "Aceptar",
         showClass: {
           popup: "animate__animated animate__zoomIn",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
         },
       });
     } else {

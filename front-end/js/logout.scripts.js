@@ -9,14 +9,21 @@ const logout = () => {
     showClass: {
       popup: "animate__animated animate__zoomIn",
     },
+    hideClass: {
+      popup: "animate__animated animate__zoomOut",
+    },
   }).then((result) => {
     if (result.isConfirmed) {
       Swal.fire({
         icon: "success",
         title: "Gracias por utilizar nuestros servicios",
         showConfirmButton: true,
+        confirmButtonText: `Aceptar`,
         showClass: {
           popup: "animate__animated animate__zoomIn",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
         },
       });
       setTimeout(() => {

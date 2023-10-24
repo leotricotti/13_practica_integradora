@@ -192,6 +192,23 @@ const addProduct = async (idProduct) => {
       }
     );
 
+    const result = await response.json();
+
+    if (result.status === "error") {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "No está autorizado para realizar esta acción",
+        confirmButtonText: "Aceptar",
+        showClass: {
+          popup: "animate__animated animate__zoomIn",
+        },
+        hideClass: {
+          popup: "animate__animated animate__zoomOut",
+        },
+      });
+    }
+
     cartBadge();
     return response;
   } catch (error) {
