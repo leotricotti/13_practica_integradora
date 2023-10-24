@@ -1,7 +1,10 @@
 import { cartService } from "../repository/index.js";
 import CustomError from "../services/errors/CustomError.js";
 import EErrors from "../services/errors/enum.js";
-import { generateCartErrorInfo } from "../services/errors/info.js";
+import {
+  generateCartErrorInfo,
+  generateAuthErrorInfo,
+} from "../services/errors/info.js";
 
 // Método asyncrono para obtener todos los carritos
 async function getAll(req, res, next) {
@@ -11,7 +14,7 @@ async function getAll(req, res, next) {
       req.logger.error(
         `Error de base de datos: Error al cargar los carritos ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de base de datos",
         cause: generateCartErrorInfo(carts, EErrors.DATABASE_ERROR),
         message: "Error al cargar los carritos",
@@ -36,7 +39,7 @@ async function getOne(req, res, next) {
       req.logger.error(
         `Error de tipo de dato: Error al obtener el carrito ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de tipo de dato",
         cause: generateCartErrorInfo(cid, EErrors.INVALID_TYPES_ERROR),
         message: "Error al obtener el carrito",
@@ -48,7 +51,7 @@ async function getOne(req, res, next) {
       req.logger.error(
         `Error de base de datos: Error al obtener el carrito ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de base de datos",
         cause: generateCartErrorInfo(cart, EErrors.DATABASE_ERROR),
         message: "Error al obtener el carrito",
@@ -73,7 +76,7 @@ async function populatedCart(req, res, next) {
       req.logger.error(
         `Error de tipo de dato: Error al popular el carrito ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de tipo de dato",
         cause: generateCartErrorInfo(cid, EErrors.INVALID_TYPES_ERROR),
         message: "Error al popular el carrito",
@@ -85,7 +88,7 @@ async function populatedCart(req, res, next) {
       req.logger.error(
         `Error de base de datos: Error al popular el carrito ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de base de datos",
         cause: generateCartErrorInfo(cart, EErrors.DATABASE_ERROR),
         message: "Error al popular el carrito",
@@ -110,7 +113,7 @@ async function createCart(req, res, next) {
       req.logger.error(
         `Error de tipo de dato: Error al crear el carrito ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de tipo de dato",
         cause: generateCartErrorInfo(newCart, EErrors.INVALID_TYPES_ERROR),
         message: "Error al crear el carrito",
@@ -122,7 +125,7 @@ async function createCart(req, res, next) {
       req.logger.error(
         `Error de base de datos: Error al crear el carrito ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de base de datos",
         cause: generateCartErrorInfo(newCart, EErrors.DATABASE_ERROR),
         message: "Error al crear el carrito",
@@ -149,7 +152,7 @@ async function manageCartProducts(req, res, next) {
       req.logger.error(
         `Error de tipo de dato: Error al agregar productos al carrito ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de tipo de dato",
         cause: generateCartErrorInfo(cid, EErrors.INVALID_TYPES_ERROR),
         message: "Error al agregar productos al carrito",
@@ -162,7 +165,7 @@ async function manageCartProducts(req, res, next) {
       req.logger.error(
         `Error de base de datos: Error al obtener el carrito ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de base de datos",
         cause: generateCartErrorInfo(cart, EErrors.DATABASE_ERROR),
         message: "Error al obtener el carrito",
@@ -173,28 +176,40 @@ async function manageCartProducts(req, res, next) {
         (product) => product.product == pid
       );
 
-      if (productExist === -1) {
-        cart.products.push({ product: pid, quantity: 1 });
-      } else {
-        if (op === "add") {
-          cart.products[productExist].quantity += 1;
-        } else if (op === "substract") {
-          cart.products[productExist].quantity -= 1;
-        }
-      }
-      const result = await cartService.updateOneCart(cid, cart);
-      if (!result) {
-        throw CustomError.createError({
-          name: "Error de base de datos",
+      if (productExist.owner === req.user.user.username) {
+        req.logger.error(
+          `Error de autenticación: El propietario no puede agregar su producto al carrito ${new Date().toLocaleString()}`
+        );
+        CustomError.createError({
+          name: "Error de autenticación",
           cause: generateCartErrorInfo(cart, EErrors.DATABASE_ERROR),
-          message: "Error al actualizar el carrito",
+          message: "El propietario no puede agregar su producto al carrito",
           code: EErrors.DATABASE_ERROR,
         });
       } else {
-        req.logger.info(
-          `Carrito populado con éxito ${new Date().toLocaleString()}`
-        );
-        res.json({ message: "Carrito actualizado con éxito", data: cart });
+        if (productExist === -1) {
+          cart.products.push({ product: pid, quantity: 1 });
+        } else {
+          if (op === "add") {
+            cart.products[productExist].quantity += 1;
+          } else if (op === "substract") {
+            cart.products[productExist].quantity -= 1;
+          }
+        }
+        const result = await cartService.updateOneCart(cid, cart);
+        if (!result) {
+          CustomError.createError({
+            name: "Error de base de datos",
+            cause: generateCartErrorInfo(cart, EErrors.DATABASE_ERROR),
+            message: "Error al actualizar el carrito",
+            code: EErrors.DATABASE_ERROR,
+          });
+        } else {
+          req.logger.info(
+            `Carrito populado con éxito ${new Date().toLocaleString()}`
+          );
+          res.json({ message: "Carrito actualizado con éxito", data: cart });
+        }
       }
     }
   } catch (err) {
@@ -210,7 +225,7 @@ async function deleteProduct(req, res, next) {
       req.logger.error(
         `Error de tipo de dato: Error al eliminar el producto ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de tipo de dato",
         cause: generateCartErrorInfo(cid, EErrors.INVALID_TYPES_ERROR),
         message: "Error al eliminar el producto",
@@ -222,7 +237,7 @@ async function deleteProduct(req, res, next) {
       req.logger.error(
         `Error de base de datos: Error al eleiminar el producto ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de base de datos",
         cause: generateCartErrorInfo(cart, EErrors.DATABASE_ERROR),
         message: "Error al eliminar el producto",
@@ -241,7 +256,7 @@ async function deleteProduct(req, res, next) {
       req.logger.error(
         `Error de base de datos: Error al actualizar el carrito ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de base de datos",
         cause: generateCartErrorInfo(cart, EErrors.DATABASE_ERROR),
         message: "Error al actualizar el carrito",
@@ -266,7 +281,7 @@ async function emptyCart(req, res, next) {
       req.logger.error(
         `Error de tipo de dato: Error al vaciar el carrito ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de tipo de dato",
         cause: generateCartErrorInfo(cid, EErrors.INVALID_TYPES_ERROR),
         message: "Error al vaciar el carrito",
@@ -278,7 +293,7 @@ async function emptyCart(req, res, next) {
       req.logger.error(
         `Error de base de datos: Carrito no encontrado  ${new Date().toLocaleString()}`
       );
-      throw CustomError.createError({
+      CustomError.createError({
         name: "Error de base de datos",
         cause: generateCartErrorInfo(cart, EErrors.DATABASE_ERROR),
         message: "Carrito no encontrado",
@@ -291,7 +306,7 @@ async function emptyCart(req, res, next) {
         req.logger.error(
           `Error de base de datos: Error al vaciar el carrito ${new Date().toLocaleString()}`
         );
-        throw CustomError.createError({
+        CustomError.createError({
           name: "Error de base de datos",
           cause: generateCartErrorInfo(cart, EErrors.DATABASE_ERROR),
           message: "Error al vaciar el carrito",
