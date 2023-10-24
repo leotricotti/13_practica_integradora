@@ -136,7 +136,7 @@ async function deleteProduct(req, res, next) {
 
     const product = await productsService.getOneProduct(id);
 
-    if (userRole === "premium" && product.owner !== req.user.email) {
+    if (userRole === "premium" && product.owner !== req.user.user.username) {
       const errorMessage = `Error de permisos: Error al eliminar el producto ${new Date().toLocaleString()}`;
       req.logger.error(errorMessage);
       CustomError.createError({
@@ -145,24 +145,28 @@ async function deleteProduct(req, res, next) {
         message: "Error al eliminar el producto",
         code: EErrors.AUTH_ERROR,
       });
-
+    } else {
       const result = await productsService.deleteOneProduct(id);
-
-      if (!result) {
-        const errorMessage = `Error de base de datos: Error al eliminar el producto ${new Date().toLocaleString()}`;
-        req.logger.error(errorMessage);
-        CustomError.createError({
-          name: "Error de base de datos",
-          cause: generateProductErrorInfo(result, EErrors.DATABASE_ERROR),
-          message: "Error al eliminar el producto",
-          code: EErrors.DATABASE_ERROR,
-        });
-      }
-
-      const message = `Producto eliminado con éxito ${new Date().toLocaleString()}`;
-      req.logger.info(message);
-      res.json({ message, data: result });
+      req.logger.info(
+        `Producto eliminado con éxito ${new Date().toLocaleString()}`
+      );
+      res.json({ message: `Producto eliminado con éxito`, data: result });
     }
+
+    if (!result) {
+      const errorMessage = `Error de base de datos: Error al eliminar el producto ${new Date().toLocaleString()}`;
+      req.logger.error(errorMessage);
+      CustomError.createError({
+        name: "Error de base de datos",
+        cause: generateProductErrorInfo(result, EErrors.DATABASE_ERROR),
+        message: "Error al eliminar el producto",
+        code: EErrors.DATABASE_ERROR,
+      });
+    }
+
+    const message = `Producto eliminado con éxito ${new Date().toLocaleString()}`;
+    req.logger.info(message);
+    res.json({ message, data: result });
   } catch (err) {
     next(err);
   }

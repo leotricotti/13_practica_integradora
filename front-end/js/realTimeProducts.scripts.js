@@ -464,10 +464,14 @@ function eliminarProducto(id) {
           showClass: {
             popup: "animate__animated animate__zoomIn",
           },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            setTimeout(function () {
+              window.location.reload();
+            }, 500);
+          }
         });
       }
-
-      window.location.reload();
 
       Swal.fire({
         icon: "success",
@@ -476,6 +480,12 @@ function eliminarProducto(id) {
         showClass: {
           popup: "animate__animated animate__zoomIn",
         },
+      }).then((result) => {
+        if (result.isConfirmed) {
+          setTimeout(function () {
+            window.location.reload();
+          }, 500);
+        }
       });
     }
   });
